@@ -1,87 +1,120 @@
-/* 
- * File:   ecu_push_btn.c
- * Author: Ahmed Hani Atef
- *
- * Created on September 4, 2023
- */
-
-#include "push_btn.h"
-
 /**
- * @brief initialize a pin as input for a push button
- * 
- * @param __btn a pointer to the push button 
- * @return std_returntype 
- * @retval (STD_OK)     : if the function run successfully
- * @retval (STD_NOT_OK) : if something goes wrong
+ * @file ecu_7_segment.c
+ * @author Ahmed Hani Atef
+ * @brief this file contains the interface of 7 segment display
+ * @date 2023-09-08
  */
-std_returntype push_btn_initialize (push_btn_config_t *__btn)
+
+#include "ecu_7_segment.h"
+
+std_returntype _7_segment_initialize(const _7_segment_cfg_t *__7_segment)
 {
     std_returntype ret = STD_OK;
-    if (NULL == __btn)
+    uint8_t new_value = 0;
+    pin_cofig_t __pin;
+    register uint8_t counter = 0;
+    uint8_t index_of_pins[] = {__7_segment->pins_cfg.led_pins.G_led,
+                               __7_segment->pins_cfg.led_pins.F_led,
+                               __7_segment->pins_cfg.led_pins.E_led,
+                               __7_segment->pins_cfg.led_pins.D_led,
+                               __7_segment->pins_cfg.led_pins.C_led,
+                               __7_segment->pins_cfg.led_pins.B_led,
+                               __7_segment->pins_cfg.led_pins.A_led,
+                               __7_segment->pins_cfg.led_pins.DP_led};
+
+    uint8_t index_of_ports[] = {__7_segment->ports_cfg.led_ports.G_led,
+                                __7_segment->ports_cfg.led_ports.F_led,
+                                __7_segment->ports_cfg.led_ports.E_led,
+                                __7_segment->ports_cfg.led_ports.D_led,
+                                __7_segment->ports_cfg.led_ports.C_led,
+                                __7_segment->ports_cfg.led_ports.B_led,
+                                __7_segment->ports_cfg.led_ports.A_led,
+                                __7_segment->ports_cfg.led_ports.DP_led};
+    if (NULL == __7_segment)
     {
         ret = STD_NOT_OK;
     }
-    else 
+    else
     {
-        pin_cofig_t btn = { .port       = __btn->port,
-                            .pin        = __btn->pin,
-                            .direction  = GPIO_INPUT,
-                            .logic      = GPIO_LOW};
-
-        ret = gpio_pin_direction_initialize(&btn, GPIO_INPUT);
-    }
-
-    return ret;
-}
-
-/**
- * @brief read the status of a push button
- * 
- * @note when call this function it reads the value of port register using @ref gpio_pin_read, it includes a part of code to hold the state of holding the push button
- * @param __btn a pointer to the push button 
- * @param __status a pointer to where the status will be stored
- * @return std_returntype 
- * @retval (STD_OK)     : if the function run successfully
- * @retval (STD_NOT_OK) : if something goes wrong
- */
-std_returntype push_btn_read (push_btn_config_t *__btn, logic_t *__status)
-{
-    std_returntype ret = STD_OK;
-    if ((NULL == __btn) || (NULL == __status))
-    {
-        ret = STD_NOT_OK;
-    }
-    else 
-    {
-        pin_cofig_t btn = { .port       = __btn->port,
-                            .pin        = __btn->pin,
-                            .direction  = GPIO_INPUT,
-                            .logic      = GPIO_LOW};
-        ret = gpio_pin_read(&btn, __status);
-
-        logic_t __real_status = GPIO_LOW;
-        do 
+        switch (__7_segment->connection)
         {
-            ret |= gpio_pin_read(&btn, __status);
-            if (*__status)
+        case INDIVIDUAL_PINS:
+
+            for (counter = 0; counter < NUMBER_OF_LEDS; counter++)
             {
-                __real_status = GPIO_HIGH;
+                __pin.port = index_of_ports[counter];
+                __pin.pin = index_of_pins[counter];
+                __pin.direction = GPIO_OUTPUT;
+
+                
+
+                if (COMMON_CATHODE == __7_segment->type)
+                {
+                    if (counter == INDEX_OF_DP_LED)
+                    {
+                        __pin.logic = __7_segment->dp_status;
+                    }
+                    else
+                    {
+                        ACCESS_BIT_IN_VALUE_LED(__7_segment->value, counter, __pin.logic);
+                    }
+                    ret |= gpio_pin_initialize(&__pin, GPIO_OUTPUT, __pin.logic);
+                }
+                else if (COMMON_ANODE == __7_segment->type)
+                {
+                    if (counter == INDEX_OF_DP_LED)
+                    {
+                        __pin.logic = !(__7_segment->dp_status);
+                    }
+                    else
+                    {
+                        ACCESS_BIT_IN_VALUE_LED_TOGGLED(__7_segment->value, counter, __pin.logic);
+                    }
+                    ret |= gpio_pin_initialize(&__pin, GPIO_OUTPUT, !(__pin.logic));
+                }
+                else
+                {
+                    ret = STD_NOT_OK;
+                }
             }
-        }while (*__status);
 
-        *__status = __real_status;
+            break;
+
+        case SEQUENTIAL_PINS:
+            new_value = __7_segment->value;
+            EDIT_VALUE_WITH_DP_STATUS(new_value, __7_segment->dp_status);
+
+            if (COMMON_CATHODE == __7_segment->type)
+            {
+                ret = gpio_port_initialize(__7_segment->ports_cfg.sequential_ports, GPIO_OUTPUT, new_value);
+            }
+            else if (COMMON_ANODE == __7_segment->type)
+            {
+                ret = gpio_port_initialize(__7_segment->ports_cfg.sequential_ports, GPIO_OUTPUT, CC_TO_CA_VALUE(new_value));
+            }
+            else
+            {
+                ret = STD_NOT_OK;
+            }
+            break;
+
+        default:
+            ret = STD_NOT_OK;
+            break;
+        }
     }
-
     return ret;
 }
 
-/********************************************************************************
- * log
- * ******************************************************************************
- * author               date            details
- * ******************************************************************************
- * Ahmed Hani Atef      04-09-2023      - create the file
- * Ahmed Hani Atef      04-09-2023      - creating the interface of push button
- *                                        including the implementation 
- */
+std_returntype _7_segment_write(const _7_segment_cfg_t *__7_segment, const _7_segment_value_t __value)
+{
+    std_returntype ret = STD_OK;
+    if (NULL == __7_segment)
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+    }
+    return ret;
+}
