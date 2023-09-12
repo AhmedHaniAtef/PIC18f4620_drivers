@@ -37,12 +37,14 @@
 
 /*************** Start of Section : new data types *****************/
 
-#ifdef NORMAL_7_SEG
+
 typedef enum 
 {
     COMMON_ANODE = 0,
     COMMON_CATHODE,
 }_7_segment_type_t;
+
+#ifdef NORMAL_7_SEG
 
 typedef enum
 {
@@ -123,14 +125,54 @@ typedef struct
     uint8_t connection  : 1;
 
 }_7_segment_cfg_t;
+#endif
+
+#ifdef BCD_7_SEG
+
+typedef struct 
+{
+    uint8_t bcd_1_pin   :3;
+    uint8_t bcd_2_pin   :3;
+    uint8_t bcd_3_pin   :3;
+    uint8_t bcd_4_pin   :3;
+}bcd_pins_t;
+
+typedef struct 
+{
+    uint8_t bcd_1_port   :3;
+    uint8_t bcd_2_port   :3;
+    uint8_t bcd_3_port   :3;
+    uint8_t bcd_4_port   :3;
+}bcd_ports_t;
+
+typedef struct 
+{
+    bcd_pins_t pins_cfg;
+    bcd_ports_t ports_cfg;
+
+    uint8_t value : 4;
+    uint8_t type  : 4;  // here there is a reserved 1 bit 
+}bcd_7_segment_cfg_t;
+
 
 #endif
 /****************** End of Section :new data types *****************/
 
 
 /************ Start of Section : function declaration **************/
+#ifdef NORMAL_7_SEG
+
 std_returntype _7_segment_initialize (const _7_segment_cfg_t *__7_segment);
 std_returntype _7_segment_write(const _7_segment_cfg_t *__7_segment, const _7_segment_value_t __value, const _7_segment_dp_status_t __status);
+
+#endif
+
+#ifdef BCD_7_SEG
+
+std_returntype bcd_7_segment_initialize (const bcd_7_segment_cfg_t *__bcd_7_segment);
+std_returntype bcd_7_segment_write(const bcd_7_segment_cfg_t *__bcd_7_segment, uint8_t __value);
+
+#endif
 /************ End of Section :  function declaration ***************/
 
 

@@ -7,6 +7,8 @@
 
 #include "ecu_7_segment.h"
 
+#if NORMAL_7_SEG
+
 std_returntype _7_segment_initialize(const _7_segment_cfg_t *__7_segment)
 {
     std_returntype ret = STD_OK;
@@ -120,7 +122,8 @@ std_returntype _7_segment_write(const _7_segment_cfg_t *__7_segment, const _7_se
                                 __7_segment->ports_cfg.led_ports.B_led,
                                 __7_segment->ports_cfg.led_ports.A_led,
                                 __7_segment->ports_cfg.led_ports.DP_led};
-    if (NULL == __7_segment)
+
+    if ((NULL == __7_segment)|| (__value > 9))
     {
         ret = STD_NOT_OK;
     }
@@ -186,3 +189,91 @@ std_returntype _7_segment_write(const _7_segment_cfg_t *__7_segment, const _7_se
     }
     return ret;
 }
+
+#endif
+
+
+#ifdef BCD_7_SEG
+
+pin_cofig_t pin;
+
+
+std_returntype bcd_7_segment_initialize (const bcd_7_segment_cfg_t *__bcd_7_segment)
+{
+    std_returntype ret = STD_OK;
+
+    if (NULL == __bcd_7_segment)
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+        pin.pin = __bcd_7_segment->pins_cfg.bcd_1_pin;
+        pin.port = __bcd_7_segment->ports_cfg.bcd_1_port;
+        pin.direction = GPIO_OUTPUT;
+        pin.logic = (__bcd_7_segment->value & 0x01);
+        ret |= gpio_pin_initialize(&pin, GPIO_OUTPUT, pin.logic);
+
+        pin.pin = __bcd_7_segment->pins_cfg.bcd_2_pin;
+        pin.port = __bcd_7_segment->ports_cfg.bcd_2_port;
+        pin.direction = GPIO_OUTPUT;
+        pin.logic = (__bcd_7_segment->value & 0x02);
+        ret |= gpio_pin_initialize(&pin, GPIO_OUTPUT, pin.logic);
+
+        pin.pin = __bcd_7_segment->pins_cfg.bcd_3_pin;
+        pin.port = __bcd_7_segment->ports_cfg.bcd_3_port;
+        pin.direction = GPIO_OUTPUT;
+        pin.logic = (__bcd_7_segment->value & 0x04);
+        ret |= gpio_pin_initialize(&pin, GPIO_OUTPUT, pin.logic);
+
+        pin.pin = __bcd_7_segment->pins_cfg.bcd_4_pin;
+        pin.port = __bcd_7_segment->ports_cfg.bcd_4_port;
+        pin.direction = GPIO_OUTPUT;
+        pin.logic = (__bcd_7_segment->value & 0x08);
+        ret |= gpio_pin_initialize(&pin, GPIO_OUTPUT, pin.logic);
+    }
+    
+    return ret;
+}
+
+std_returntype bcd_7_segment_write(const bcd_7_segment_cfg_t *__bcd_7_segment, uint8_t __value)
+{
+    std_returntype ret = STD_OK;
+
+    if ((NULL == __bcd_7_segment) || (__value > 9))
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+        
+        
+        pin.pin = __bcd_7_segment->pins_cfg.bcd_1_pin;
+        pin.port = __bcd_7_segment->ports_cfg.bcd_1_port;
+        pin.direction = GPIO_OUTPUT;
+        pin.logic = (__value & 0x01);
+        ret |= gpio_pin_write(&pin, pin.logic);
+
+        pin.pin = __bcd_7_segment->pins_cfg.bcd_2_pin;
+        pin.port = __bcd_7_segment->ports_cfg.bcd_2_port;
+        pin.direction = GPIO_OUTPUT;
+        pin.logic = (__value & 0x02) >> 1;
+        ret |= gpio_pin_write(&pin, pin.logic);
+
+        pin.pin = __bcd_7_segment->pins_cfg.bcd_3_pin;
+        pin.port = __bcd_7_segment->ports_cfg.bcd_3_port;
+        pin.direction = GPIO_OUTPUT;
+        pin.logic = (__value & 0x04) >> 2;
+        ret |= gpio_pin_write(&pin, pin.logic);
+        
+        pin.pin = __bcd_7_segment->pins_cfg.bcd_4_pin;
+        pin.port = __bcd_7_segment->ports_cfg.bcd_4_port;
+        pin.direction = GPIO_OUTPUT;
+        pin.logic = (__value & 0x08) >> 3;
+        ret |= gpio_pin_write(&pin, pin.logic);
+    }
+    
+    return ret;
+}
+
+#endif

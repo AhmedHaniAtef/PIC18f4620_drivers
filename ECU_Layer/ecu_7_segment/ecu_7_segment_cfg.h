@@ -10,9 +10,9 @@
 #ifndef ECU_7_SEGMENT_CFG_H
 #define ECU_7_SEGMENT_CFG_H
 
-#define NORMAL_7_SEG
+//#define NORMAL_7_SEG
 
-
+#define BCD_7_SEG
 
 
 #endif // ECU_7_SEGMENT_CFG_H
