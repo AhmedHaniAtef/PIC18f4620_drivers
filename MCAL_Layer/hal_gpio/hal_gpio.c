@@ -179,7 +179,7 @@ std_returntype gpio_pin_initialize(const pin_cofig_t *__pin, gpio_direction_t __
         {
         case GPIO_OUTPUT:
             gpio_pin_direction_initialize(__pin, __direction);
-            gpio_pin_write(__pin,__pin->logic);
+            gpio_pin_write(__pin,__logic);
             break;
 
         case GPIO_INPUT:
