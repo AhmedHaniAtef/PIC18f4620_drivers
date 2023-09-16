@@ -1,5 +1,8 @@
 {
     "files.associations": {
         "ecu_7_segment.h": "c"
-    }
+    },
+    "cSpell.words": [
+        "microcontroller"
+    ]
 }
