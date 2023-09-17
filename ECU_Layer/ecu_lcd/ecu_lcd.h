@@ -190,6 +190,19 @@ typedef struct
 }lcd_display_shift_cfg_t;
 /*--------------------------------------*/
 
+typedef enum
+{
+    LCD_DISPLAY_CLEAR_BEHAVIOR,
+    LCD_DISPLAY_ON_BEHAVIOR,
+    LCD_DISPLAY_OFF_BEHAVIOR,
+    LCD_RETURN_HOME_BEHAVIOR,
+    LCD_NEXT_CHAR_INCREMENT,
+    LCD_NEXT_CHAR_DECREMENT,
+    LCD_SHOW_UNDERLINE_CURSOR,
+    LCD_HIDE_UNDERLINE_CURSOR,
+    LCD_SHOW_CURSOR_BLINK,
+    LCD_HIDE_CURSOR_BLINK,
+}lcd_behavior_t;
 /****************** End of Section :new data types *****************/
 
 
@@ -203,6 +216,7 @@ std_returntype lcd_4bit_send_string(lcd_4bit_t *__lcd, uint8_t *str);
 std_returntype lcd_4bit_send_string_pos(lcd_4bit_t *__lcd, uint8_t __row, uint8_t __column, uint8_t *str);
 std_returntype lcd_4bit_send_custom_char_pos(lcd_4bit_t *__lcd, uint8_t __row, uint8_t __column, uint8_t __ch[], uint8_t __mem_pos);
 std_returntype lcd_4bit_shift(lcd_4bit_t *__lcd, lcd_display_shift_cfg_t *__shift);
+std_returntype lcd_4bit_behavior(lcd_4bit_t *__lcd, lcd_behavior_t __behavior);
 
 std_returntype lcd_8bit_initialize (lcd_8bit_t *__lcd);
 std_returntype lcd_8bit_send_command(lcd_8bit_t *__lcd, uint8_t __command);
@@ -213,6 +227,7 @@ std_returntype lcd_8bit_send_string(lcd_8bit_t *__lcd, uint8_t *str);
 std_returntype lcd_8bit_send_string_pos(lcd_8bit_t *__lcd, uint8_t __row, uint8_t __column, uint8_t *str);
 std_returntype lcd_8bit_send_custom_char_pos(lcd_8bit_t *__lcd, uint8_t __row, uint8_t __column, uint8_t __ch[], uint8_t __mem_pos);
 std_returntype lcd_8bit_shift(lcd_8bit_t *__lcd, lcd_display_shift_cfg_t *__shift);
+std_returntype lcd_8bit_behavior(lcd_8bit_t *__lcd, lcd_behavior_t __behavior);
 /************ End of Section :  function declaration ***************/
 
 

@@ -231,6 +231,57 @@ std_returntype lcd_4bit_shift(lcd_4bit_t *__lcd, lcd_display_shift_cfg_t *__shif
     return ret;
 }
 
+std_returntype lcd_4bit_behavior(lcd_4bit_t *__lcd, lcd_behavior_t __behavior)
+{
+    std_returntype ret = STD_OK;
+    if (NULL == __lcd)
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+        switch (__behavior)
+        {
+        case LCD_DISPLAY_CLEAR_BEHAVIOR:
+            ret |= lcd_4bit_send_command(__lcd, LCD_DISPLAY_CLEAR);
+            break;
+        case LCD_DISPLAY_ON_BEHAVIOR:
+            ret |= lcd_4bit_send_command(__lcd, LCD_DISPLAY_ON);
+            break;
+        case LCD_DISPLAY_OFF_BEHAVIOR:
+            ret |= lcd_4bit_send_command(__lcd, LCD_DISPLAY_OFF);
+            break;
+        case LCD_RETURN_HOME_BEHAVIOR:
+            ret |= lcd_4bit_send_command(__lcd, LCD_RETURN_HOME);
+            break;
+        case LCD_NEXT_CHAR_INCREMENT:
+            ret |= lcd_4bit_send_command(__lcd, LCD_ADDRESS_COUNTER_INCREMENT);
+            break;
+        case LCD_NEXT_CHAR_DECREMENT:
+            ret |= lcd_4bit_send_command(__lcd, LCD_ADDRESS_COUNTER_DECREMENT);
+            break;
+        case LCD_SHOW_UNDERLINE_CURSOR:
+            ret |= lcd_4bit_send_command(__lcd, COMMAND_MERGE(LCD_DISPLAY_ON, LCD_UNDERLINE_ON));
+            break;
+        case LCD_HIDE_UNDERLINE_CURSOR:
+            ret |= lcd_4bit_send_command(__lcd, COMMAND_MERGE(LCD_DISPLAY_ON, LCD_UNDERLINE_OFF));
+            break;
+        case LCD_SHOW_CURSOR_BLINK:
+            ret |= lcd_4bit_send_command(__lcd, COMMAND_MERGE(LCD_DISPLAY_ON, LCD_CURSOR_BLINK_ON));
+            break;
+        case LCD_HIDE_CURSOR_BLINK:
+            ret |= lcd_4bit_send_command(__lcd,  COMMAND_MERGE(LCD_DISPLAY_ON, LCD_CURSOR_BLINK_OFF));
+            break;
+        default:
+            ret |= STD_NOT_OK;
+            break;
+        }
+    }
+    return ret;
+}
+
+
+
 std_returntype lcd_8bit_initialize(lcd_8bit_t *__lcd)
 {
     std_returntype ret = STD_OK;
@@ -457,6 +508,65 @@ std_returntype lcd_8bit_shift(lcd_8bit_t *__lcd, lcd_display_shift_cfg_t *__shif
     }
     return ret;
 }
+
+std_returntype lcd_48it_behavior(lcd_8bit_t *__lcd, lcd_behavior_t __behavior)
+{
+    std_returntype ret = STD_OK;
+    if (NULL == __lcd)
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+    std_returntype ret = STD_OK;
+    if (NULL == __lcd)
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+        switch (__behavior)
+        {
+        case LCD_DISPLAY_CLEAR_BEHAVIOR:
+            ret |= lcd_8bit_send_command(__lcd, LCD_DISPLAY_CLEAR);
+            break;
+        case LCD_DISPLAY_ON_BEHAVIOR:
+            ret |= lcd_8bit_send_command(__lcd, LCD_DISPLAY_ON);
+            break;
+        case LCD_DISPLAY_OFF_BEHAVIOR:
+            ret |= lcd_8bit_send_command(__lcd, LCD_DISPLAY_OFF);
+            break;
+        case LCD_RETURN_HOME_BEHAVIOR:
+            ret |= lcd_8bit_send_command(__lcd, LCD_RETURN_HOME);
+            break;
+        case LCD_NEXT_CHAR_INCREMENT:
+            ret |= lcd_8bit_send_command(__lcd, LCD_ADDRESS_COUNTER_INCREMENT);
+            break;
+        case LCD_NEXT_CHAR_DECREMENT:
+            ret |= lcd_8bit_send_command(__lcd, LCD_ADDRESS_COUNTER_DECREMENT);
+            break;
+        case LCD_SHOW_UNDERLINE_CURSOR:
+            ret |= lcd_8bit_send_command(__lcd, COMMAND_MERGE(LCD_DISPLAY_ON, LCD_UNDERLINE_ON));
+            break;
+        case LCD_HIDE_UNDERLINE_CURSOR:
+            ret |= lcd_8bit_send_command(__lcd, COMMAND_MERGE(LCD_DISPLAY_ON, LCD_UNDERLINE_OFF));
+            break;
+        case LCD_SHOW_CURSOR_BLINK:
+            ret |= lcd_8bit_send_command(__lcd, COMMAND_MERGE(LCD_DISPLAY_ON, LCD_CURSOR_BLINK_ON));
+            break;
+        case LCD_HIDE_CURSOR_BLINK:
+            ret |= lcd_8bit_send_command(__lcd,  COMMAND_MERGE(LCD_DISPLAY_ON, LCD_CURSOR_BLINK_OFF));
+            break;
+        default:
+            ret |= STD_NOT_OK;
+            break;
+        }
+    }
+    return ret;
+    }
+    return ret;
+}
+
 
 
 static std_returntype lcd_send_4bit(lcd_4bit_t *__lcd, uint8_t __bits)

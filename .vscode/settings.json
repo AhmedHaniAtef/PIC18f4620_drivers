@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "ecu_7_segment.h": "c"
+        "ecu_7_segment.h": "c",
+        "ecu_keypad.h": "c"
     },
     "cSpell.words": [
         "microcontroller"
