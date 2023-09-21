@@ -228,6 +228,10 @@ std_returntype lcd_8bit_send_string_pos(lcd_8bit_t *__lcd, uint8_t __row, uint8_
 std_returntype lcd_8bit_send_custom_char_pos(lcd_8bit_t *__lcd, uint8_t __row, uint8_t __column, uint8_t __ch[], uint8_t __mem_pos);
 std_returntype lcd_8bit_shift(lcd_8bit_t *__lcd, lcd_display_shift_cfg_t *__shift);
 std_returntype lcd_8bit_behavior(lcd_8bit_t *__lcd, lcd_behavior_t __behavior);
+
+std_returntype convert_uint8_to_string(uint8_t value, uint8_t *str);
+std_returntype convert_uint16_to_string(uint16_t value, uint8_t *str);
+std_returntype convert_uint32_to_string(uint32_t value, uint8_t *str);
 /************ End of Section :  function declaration ***************/
 
 
