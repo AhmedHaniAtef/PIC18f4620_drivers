@@ -703,3 +703,52 @@ static std_returntype lcd_8bit_set_cursor(lcd_8bit_t *__lcd, uint8_t __row, uint
     }
     return ret;
 }
+
+
+
+std_returntype convert_uint8_to_string(uint8_t value, uint8_t *str)
+{
+    std_returntype ret = STD_OK;
+    if (str == NULL)
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+        memset(str, '/0', 4);
+        sprintf(str, "%i", value);
+    }
+    return ret;
+}
+
+std_returntype convert_uint16_to_string(uint16_t value, uint8_t *str)
+{
+    std_returntype ret = STD_OK;
+    if (str == NULL)
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+        memset(str, '/0', 6);
+        sprintf(str, "%i", value);
+    }
+    return ret;
+}
+
+std_returntype convert_uint32_to_string(uint32_t value, uint8_t *str)
+{
+    std_returntype ret = STD_OK;
+    if (str == NULL)
+    {
+        ret = STD_NOT_OK;
+    }
+    else
+    {
+        memset(str, '/0', 11);
+        sprintf(str, "%i", value);
+    }
+    return ret;
+}
+
+
